@@ -19,6 +19,7 @@ func RunSecond(){
 }
 
 func PrintSomething(s string, wg *sync.WaitGroup){
+	// defer is used to schedule a function call to be executed when the surrounding function (the one containing the defer statement) returns, either normally or via a panic.
 	defer wg.Done()
 	fmt.Println(s)
 }
