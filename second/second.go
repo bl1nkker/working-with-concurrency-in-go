@@ -2,16 +2,23 @@ package second
 
 import (
 	"fmt"
-	"time"
+	"sync"
 )
 
 func RunSecond(){
-	go PrintSomething("This is the first thing to be printed")
+	var wg sync.WaitGroup
+	words := []string{"Alpha", "Beta", "Delta", "Gamma", "Zeta", "Epsilon", "Theta", "Eta"}
+	wg.Add(len(words))
+	for i, val := range words{
+		go PrintSomething(fmt.Sprintf("%d: %s", i, val), &wg)
+	}
 	// Without sleep goroutine above will not display anything
-	time.Sleep(1 * time.Second)
-	PrintSomething("This is the second thing to be printed")
+	wg.Wait()
+	wg.Add(1)
+	PrintSomething("This is the second thing to be printed", &wg)
 }
 
-func PrintSomething(s string){
+func PrintSomething(s string, wg *sync.WaitGroup){
+	defer wg.Done()
 	fmt.Println(s)
 }
