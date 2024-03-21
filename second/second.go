@@ -1,1 +1,5 @@
 package second
+
+func RunSecond(){
+	
+}
