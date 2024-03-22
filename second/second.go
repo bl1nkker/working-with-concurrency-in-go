@@ -5,7 +5,7 @@ import (
 	"sync"
 )
 
-func RunSecond(){
+func Run(){
 	var wg sync.WaitGroup
 	words := []string{"Alpha", "Beta", "Delta", "Gamma", "Zeta", "Epsilon", "Theta", "Eta"}
 	wg.Add(len(words))
