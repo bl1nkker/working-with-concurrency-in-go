@@ -7,5 +7,6 @@ import (
 
 func main(){
 	second.Run()
+	second.RunRestaurantSimulation()
 	third.Run()
 }
