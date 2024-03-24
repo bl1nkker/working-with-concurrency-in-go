@@ -1,6 +1,9 @@
 test:
 	go test ./...
 
+ractest:
+	go test -race ./...
+
 run:
 	go run main.go
 

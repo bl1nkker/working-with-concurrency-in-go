@@ -15,16 +15,21 @@ func updateMessage(s string, m *sync.Mutex){
 	m.Unlock()
 }
 
-// func raceConditionFunc(){
-// 	msg = "Hello World"
-// 	wg.Add(2)
-// 	go updateMessage("This should be First")
-// 	go updateMessage("This should be Second")
-// 	wg.Wait()
-// 	fmt.Println(msg)
-// }
+func updateMessageRC(s string){
+	defer wg.Done()
+	msg = s
+}
 
-func mutexFunc(){
+func RunRC(){
+	msg = "Hello World"
+	wg.Add(2)
+	go updateMessageRC("This should be First")
+	go updateMessageRC("This should be Second")
+	wg.Wait()
+	fmt.Println(msg)
+}
+
+func Run(){
 	var mutex sync.Mutex
 	msg = "Hello World"
 	wg.Add(2)
@@ -32,9 +37,4 @@ func mutexFunc(){
 	go updateMessage("This should be Second", &mutex)
 	wg.Wait()
 	fmt.Println(msg)
-}
-
-func Run(){
-	// raceConditionFunc()
-	mutexFunc()
 }
