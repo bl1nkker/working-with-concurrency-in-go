@@ -6,8 +6,8 @@ import (
 )
 
 func main(){
-	second.Run()
+	// second.Run()
 	// second.RunRestaurantSimulation()
-	// second.RunChallenge()
+	second.RunChallenge()
 	mutex.Run()
 }
