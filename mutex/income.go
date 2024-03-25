@@ -28,6 +28,7 @@ func RunIncome(){
 	for i, income := range incomes{
 		go func(i int, income Income){
 			defer wg2.Done()
+			// set range to 100000 and disable mutexes to see race condition
 			for week := 1; week <= 52; week ++{
 				mutex.Lock()
 				balance += income.Amount

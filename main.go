@@ -10,8 +10,7 @@ func main(){
 	// second.RunRestaurantSimulation()
 	second.RunChallenge()
 	// mutex.Run()
-	// mutex.RunAnotherExampleRC()
-	mutex.RunClearExample()
 	// mutex.RunRC()
-	// mutex.RunIncome()
+	// mutex.RunClearExample()
+	mutex.RunIncome()
 }
