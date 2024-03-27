@@ -2,6 +2,7 @@ package main
 
 import (
 	"working-with-concurrency-in-go/mutex"
+	"working-with-concurrency-in-go/producerconsumer"
 	"working-with-concurrency-in-go/second"
 )
 
@@ -13,4 +14,5 @@ func main(){
 	// mutex.RunRC()
 	// mutex.RunClearExample()
 	mutex.RunIncome()
+	producerconsumer.Run()
 }
