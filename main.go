@@ -9,6 +9,7 @@ import (
 func main(){
 	// second.Run()
 	// second.RunRestaurantSimulation()
+	second.RunAssignment()
 	second.RunChallenge()
 	// mutex.Run()
 	// mutex.RunRC()
