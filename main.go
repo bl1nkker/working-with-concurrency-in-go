@@ -9,12 +9,13 @@ import (
 func main(){
 	// second.Run()
 	// second.RunRestaurantSimulation()
-	second.RunAssignment()
+	// second.RunAssignment()
 	second.RunChallenge()
-	// mutex.Run()
+	mutex.Run()
 	// mutex.RunRC()
 	// mutex.RunClearExample()
-	mutex.RunIncome()
-	producerconsumer.Run()
-	producerconsumer.RunExample()
+	// mutex.RunIncome()
+	// producerconsumer.Run()
+	// producerconsumer.RunExample()
+	producerconsumer.RunSelect()
 }

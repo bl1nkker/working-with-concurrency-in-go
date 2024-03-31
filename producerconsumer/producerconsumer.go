@@ -46,25 +46,22 @@ func makePizza(pizzaNumber int) *PizzaOrder{
 		rnd := rand.Intn(12) + 1
 		message := ""
 		success := false
-
-		if rnd < 5{
-			pizzasFailed ++
-		} else{
-			pizzasMade ++
-		}
-		total ++
+		
 		fmt.Printf("Making pizza #%d. It will take %d seconds", pizzaNumber, delay)
-
 		time.Sleep(time.Duration(delay) * time.Second)
 
 		if rnd <= 2{
-			message = fmt.Sprintf("*** We ran out of ingridients for pizza #%d!", pizzaNumber)
+			pizzasFailed ++
+			message = fmt.Sprintf("*** We ran out of ingrеdients for pizza #%d!", pizzaNumber)
 		} else if rnd <= 4{
+			pizzasFailed ++
 			message = fmt.Sprintf("*** The cook quit while making the pizza #%d!", pizzaNumber)
 		} else{
+			pizzasMade ++
 			success = true
 			message = fmt.Sprintf("Pizza order #%d is ready!", pizzaNumber)
 		}
+		total ++
 		return &PizzaOrder{pizzaNumber: pizzaNumber, message: message, success: success}
 	}
 	return &PizzaOrder{pizzaNumber: pizzaNumber}
@@ -76,8 +73,19 @@ func pizzeria(pizzaMaker *Producer){
 	// run forever, or until we receive a quit notification
 	for {
 		currentPizza := makePizza(i)
+		if currentPizza != nil{
+			i = currentPizza.pizzaNumber
+			// The select statement in Go selects cases based on which channel operation becomes ready first. If multiple cases are ready at the same time, one will be chosen randomly.
+			select{
+			case pizzaMaker.data <- *currentPizza:
+			case quitChan := <-pizzaMaker.quit:
+				// close channels
+				close(pizzaMaker.data)
+				close(quitChan)
+				return
+			}
+		}
 	}
-	// try to make pizzas
 }
 
 func Run(){
