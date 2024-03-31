@@ -47,19 +47,19 @@ func makePizza(pizzaNumber int) *PizzaOrder{
 		message := ""
 		success := false
 		
-		fmt.Printf("Making pizza #%d. It will take %d seconds", pizzaNumber, delay)
+		fmt.Printf("Making pizza #%d. It will take %d seconds\n", pizzaNumber, delay)
 		time.Sleep(time.Duration(delay) * time.Second)
 
 		if rnd <= 2{
 			pizzasFailed ++
-			message = fmt.Sprintf("*** We ran out of ingrеdients for pizza #%d!", pizzaNumber)
+			message = fmt.Sprintf("*** We ran out of ingrеdients for pizza #%d!\n", pizzaNumber)
 		} else if rnd <= 4{
 			pizzasFailed ++
-			message = fmt.Sprintf("*** The cook quit while making the pizza #%d!", pizzaNumber)
+			message = fmt.Sprintf("*** The cook quit while making the pizza #%d!\n", pizzaNumber)
 		} else{
 			pizzasMade ++
 			success = true
-			message = fmt.Sprintf("Pizza order #%d is ready!", pizzaNumber)
+			message = fmt.Sprintf("Pizza order #%d is ready!\n", pizzaNumber)
 		}
 		total ++
 		return &PizzaOrder{pizzaNumber: pizzaNumber, message: message, success: success}
@@ -101,4 +101,23 @@ func Run(){
 
 	// Run producer in background
 	go pizzeria(pizzaJob)
+
+	// create and run the consumer
+	for i := range pizzaJob.data {
+		if i.pizzaNumber <= PizzasAmount{
+			if i.success{
+				color.Green(i.message)
+				color.Green("Order number %d is out of delivery!", i.pizzaNumber)
+			} else{
+				color.Red(i.message)
+				color.Red("The customer is really mad!")
+			}
+		} else{
+			color.Cyan("Done making pizzas.")
+			err := pizzaJob.Close()
+			if err != nil{
+				color.Red("*** Error closing channel...", err)
+			}
+		}
+	}
 }

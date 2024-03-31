@@ -15,7 +15,7 @@ func main(){
 	// mutex.RunRC()
 	// mutex.RunClearExample()
 	// mutex.RunIncome()
-	// producerconsumer.Run()
+	producerconsumer.Run()
 	// producerconsumer.RunExample()
-	producerconsumer.RunSelect()
+	// producerconsumer.RunSelect()
 }
