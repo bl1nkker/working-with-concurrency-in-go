@@ -29,9 +29,9 @@ var philosophers = []Philosopher{
 }
 
 var hunger = 3 // How many times does the person eat
-var eatTime = 1 * time.Second
-var thinkTime = 3 * time.Second
-var sleepTime = 1 * time.Second
+var eatTime = 0 * time.Second
+var thinkTime = 0 * time.Second
+var sleepTime = 0 * time.Second
 
 func Run() {
 	// Print welcome message
@@ -64,13 +64,56 @@ func dine() {
 	// start the meal
 	for i := 0; i < len(philosophers); i++ {
 		// fire off the goroutine for the current philosopher
-		diningProblem(philosophers[i], wg, forks, seated)
+		go diningProblem(philosophers[i], wg, forks, seated)
 	}
 
-	wg.Wait() // pause program execution until all five goroutines done (until all five philosophers done eating)
+	wg.Wait() // pause program execution until all goroutines done (until all philosophers done eating)
 }
 
 func diningProblem(philosopher Philosopher, wg *sync.WaitGroup, forks map[int]*sync.Mutex, seated *sync.WaitGroup) {
 	defer wg.Done()
-	fmt.Printf("--- Dining Problem started for: %v\n", philosopher)
+	// seat the philosopher at the table
+	fmt.Printf("%s is seated at the table.\n", philosopher.name)
+	seated.Done()
+
+	// Wait until all philosophers will seat
+	seated.Wait()
+
+	// eat {hunger} times
+	for i := hunger; i > 0; i-- {
+		// We need to use this, in case of logical race condition
+		if philosopher.leftFork > philosopher.rightFork {
+			// get a lock on both philosopher's forks (lock a mutex). It will not be blocked, if it is already blocked by another philosopher
+			fmt.Printf("\t%s is trying to lock his left fork: %d...\n", philosopher.name, philosopher.leftFork)
+			forks[philosopher.leftFork].Lock()
+			fmt.Printf("\t%s takes the left fork: %d.\n", philosopher.name, philosopher.leftFork)
+
+			fmt.Printf("\t%s is trying to lock his right fork: %d...\n", philosopher.name, philosopher.rightFork)
+			forks[philosopher.rightFork].Lock()
+			fmt.Printf("\t%s takes the right fork: %d.\n", philosopher.name, philosopher.rightFork)
+		} else {
+			// get a lock on both philosopher's forks (lock a mutex). It will not be blocked, if it is already blocked by another philosopher
+			fmt.Printf("\t%s is trying to lock his right fork: %d...\n", philosopher.name, philosopher.rightFork)
+			forks[philosopher.rightFork].Lock()
+			fmt.Printf("\t%s takes the right fork: %d.\n", philosopher.name, philosopher.rightFork)
+
+			fmt.Printf("\t%s is trying to lock his left fork: %d...\n", philosopher.name, philosopher.leftFork)
+			forks[philosopher.leftFork].Lock()
+			fmt.Printf("\t%s takes the left fork: %d.\n", philosopher.name, philosopher.leftFork)
+		}
+
+		fmt.Printf("\t%s has both forks and is eating...\n", philosopher.name)
+		time.Sleep(eatTime)
+
+		fmt.Printf("\t%s is thinking...\n", philosopher.name)
+		time.Sleep(thinkTime)
+
+		fmt.Printf("\t+ %s is done eating and thinking. Freeing the forks %d and %d...\n", philosopher.name, philosopher.leftFork, philosopher.rightFork)
+		forks[philosopher.leftFork].Unlock()
+		forks[philosopher.rightFork].Unlock()
+		fmt.Printf("\t++ %s put down the forks. The forks %d and %d is Free!\n", philosopher.name, philosopher.leftFork, philosopher.rightFork)
+	}
+
+	fmt.Printf("%s is satisfied.\n", philosopher.name)
+	fmt.Printf("%s left the table.\n", philosopher.name)
 }
