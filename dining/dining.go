@@ -29,9 +29,9 @@ var philosophers = []Philosopher{
 }
 
 var hunger = 3 // How many times does the person eat
-var eatTime = 0 * time.Second
-var thinkTime = 0 * time.Second
-var sleepTime = 0 * time.Second
+var EatTime = 3 * time.Second
+var ThinkTime = 1 * time.Second
+var SleepTime = 3 * time.Second
 
 var orderMutex sync.Mutex
 var order []string
@@ -42,7 +42,7 @@ func Run() {
 	fmt.Println("The table is empty")
 	fmt.Println("--------------------------")
 	// Start the meal
-	dine()
+	Dine()
 	// Print finished message
 	fmt.Println("--------------------------")
 	fmt.Println("The table is empty")
@@ -50,7 +50,7 @@ func Run() {
 
 }
 
-func dine() {
+func Dine() {
 	seated := &sync.WaitGroup{}
 	seated.Add(len(philosophers)) // When this reaches 0, everyone is ready to begin eating
 	fmt.Println("Initialized seated wait groups!")
@@ -107,10 +107,10 @@ func diningProblem(philosopher Philosopher, wg *sync.WaitGroup, forks map[int]*s
 		}
 
 		fmt.Printf("\t%s has both forks and is eating...\n", philosopher.name)
-		time.Sleep(eatTime)
+		time.Sleep(EatTime)
 
 		fmt.Printf("\t%s is thinking...\n", philosopher.name)
-		time.Sleep(thinkTime)
+		time.Sleep(ThinkTime)
 
 		fmt.Printf("%s is done eating and thinking. Freeing the forks %d and %d...\n", philosopher.name, philosopher.leftFork, philosopher.rightFork)
 		forks[philosopher.leftFork].Unlock()
