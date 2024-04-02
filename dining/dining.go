@@ -2,6 +2,7 @@ package dining
 
 import (
 	"fmt"
+	"sync"
 	"time"
 )
 
@@ -34,13 +35,42 @@ var sleepTime = 1 * time.Second
 
 func Run() {
 	// Print welcome message
-	fmt.Println("Welcome, fuckers!")
+	fmt.Println("Dining Philosopher Problem")
+	fmt.Println("The table is empty")
+	fmt.Println("--------------------------")
 	// Start the meal
 	dine()
 	// Print finished message
-	fmt.Println("Bye, fuckers!")
+	fmt.Println("--------------------------")
+	fmt.Println("The table is empty")
 }
 
 func dine() {
+	seated := &sync.WaitGroup{}
+	seated.Add(len(philosophers)) // When this reaches 0, everyone is ready to begin eating
+	fmt.Println("Initialized seated wait groups!")
 
+	wg := &sync.WaitGroup{}
+	wg.Add(len(philosophers)) // When this reaches 0, everyone is done eating
+	fmt.Println("Initialized done wait groups!")
+
+	// Mutexes here need to lock the "forks"
+	forks := make(map[int]*sync.Mutex)
+	for i := 0; i < len(philosophers); i++ {
+		forks[i] = &sync.Mutex{}
+	}
+	fmt.Println("Initialized forks with mutexes!")
+
+	// start the meal
+	for i := 0; i < len(philosophers); i++ {
+		// fire off the goroutine for the current philosopher
+		diningProblem(philosophers[i], wg, forks, seated)
+	}
+
+	wg.Wait() // pause program execution until all five goroutines done (until all five philosophers done eating)
+}
+
+func diningProblem(philosopher Philosopher, wg *sync.WaitGroup, forks map[int]*sync.Mutex, seated *sync.WaitGroup) {
+	defer wg.Done()
+	fmt.Printf("--- Dining Problem started for: %v\n", philosopher)
 }
