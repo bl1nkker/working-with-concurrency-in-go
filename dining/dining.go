@@ -33,6 +33,9 @@ var eatTime = 0 * time.Second
 var thinkTime = 0 * time.Second
 var sleepTime = 0 * time.Second
 
+var orderMutex sync.Mutex
+var order []string
+
 func Run() {
 	// Print welcome message
 	fmt.Println("Dining Philosopher Problem")
@@ -43,6 +46,8 @@ func Run() {
 	// Print finished message
 	fmt.Println("--------------------------")
 	fmt.Println("The table is empty")
+	fmt.Println("The dining order is:", order)
+
 }
 
 func dine() {
@@ -66,7 +71,6 @@ func dine() {
 		// fire off the goroutine for the current philosopher
 		go diningProblem(philosophers[i], wg, forks, seated)
 	}
-
 	wg.Wait() // pause program execution until all goroutines done (until all philosophers done eating)
 }
 
@@ -108,12 +112,15 @@ func diningProblem(philosopher Philosopher, wg *sync.WaitGroup, forks map[int]*s
 		fmt.Printf("\t%s is thinking...\n", philosopher.name)
 		time.Sleep(thinkTime)
 
-		fmt.Printf("\t+ %s is done eating and thinking. Freeing the forks %d and %d...\n", philosopher.name, philosopher.leftFork, philosopher.rightFork)
+		fmt.Printf("%s is done eating and thinking. Freeing the forks %d and %d...\n", philosopher.name, philosopher.leftFork, philosopher.rightFork)
 		forks[philosopher.leftFork].Unlock()
 		forks[philosopher.rightFork].Unlock()
-		fmt.Printf("\t++ %s put down the forks. The forks %d and %d is Free!\n", philosopher.name, philosopher.leftFork, philosopher.rightFork)
+		fmt.Printf("%s put down the forks. The forks %d and %d is Free!\n", philosopher.name, philosopher.leftFork, philosopher.rightFork)
 	}
 
 	fmt.Printf("%s is satisfied.\n", philosopher.name)
 	fmt.Printf("%s left the table.\n", philosopher.name)
+	orderMutex.Lock()
+	order = append(order, philosopher.name)
+	orderMutex.Unlock()
 }
