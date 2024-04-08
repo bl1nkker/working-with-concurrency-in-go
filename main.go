@@ -1,24 +1,26 @@
 package main
 
 import (
-	"working-with-concurrency-in-go/dining"
-	"working-with-concurrency-in-go/mutex"
-	"working-with-concurrency-in-go/producerconsumer"
-	"working-with-concurrency-in-go/second"
+	// "working-with-concurrency-in-go/dining"
+	// "working-with-concurrency-in-go/mutex"
+	// "working-with-concurrency-in-go/producerconsumer"
+	// "working-with-concurrency-in-go/second"
+	"working-with-concurrency-in-go/simplechannels"
 )
 
 func main() {
 	// second.Run()
 	// second.RunRestaurantSimulation()
 	// second.RunAssignment()
-	second.RunChallenge()
-	mutex.Run()
+	// second.RunChallenge()
+	// mutex.Run()
 	// mutex.RunRC()
 	// mutex.RunClearExample()
 	// mutex.RunIncome()
 	// producerconsumer.Run()
 	// producerconsumer.RunStoryteller()
 	// producerconsumer.RunExample()
-	producerconsumer.RunSelect()
-	dining.Run()
+	// producerconsumer.RunSelect()
+	// dining.Run()
+	simplechannels.Run()
 }
