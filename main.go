@@ -6,7 +6,8 @@ import (
 	// "working-with-concurrency-in-go/producerconsumer"
 	// "working-with-concurrency-in-go/second"
 	// "working-with-concurrency-in-go/simplechannels"
-	"working-with-concurrency-in-go/channelselect"
+	// "working-with-concurrency-in-go/channelselect"
+	"working-with-concurrency-in-go/bufferedchannels"
 )
 
 func main() {
@@ -24,5 +25,6 @@ func main() {
 	// producerconsumer.RunSelect()
 	// dining.Run()
 	// simplechannels.Run()
-	channelselect.Run()
+	// channelselect.Run()
+	bufferedchannels.Run()
 }
