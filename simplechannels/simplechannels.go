@@ -11,7 +11,11 @@ func shout(ping <-chan string, pong chan<- string) {
 	for {
 		fmt.Println("Shout started...")
 		// When you get something from the channel ping, put it inside this variable
-		sPing := <-ping
+		sPing, ok := <-ping
+
+		if !ok{
+			// do something here
+		}
 		fmt.Println("Received value from ping...")
 		// Sending back to the channel pong
 		pong <- fmt.Sprintf("%s!!!", strings.ToUpper(sPing))

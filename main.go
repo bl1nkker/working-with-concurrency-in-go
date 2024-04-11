@@ -5,7 +5,8 @@ import (
 	// "working-with-concurrency-in-go/mutex"
 	// "working-with-concurrency-in-go/producerconsumer"
 	// "working-with-concurrency-in-go/second"
-	"working-with-concurrency-in-go/simplechannels"
+	// "working-with-concurrency-in-go/simplechannels"
+	"working-with-concurrency-in-go/channelselect"
 )
 
 func main() {
@@ -22,5 +23,6 @@ func main() {
 	// producerconsumer.RunExample()
 	// producerconsumer.RunSelect()
 	// dining.Run()
-	simplechannels.Run()
+	// simplechannels.Run()
+	channelselect.Run()
 }
