@@ -23,18 +23,54 @@
 
 package sleepingbarber
 
+import (
+	"time"
+
+	"github.com/fatih/color"
+)
+
+var seatingCapacity = 10
+var arrivalRate = 100
+var cutDuration = 1000 * time.Millisecond
+var timeOpen = 10 * time.Second
+
 func Run() {
 	// print welcome message
+	color.Green("The sleeping barber problem")
+	color.Green("--------------------------")
 
 	// create channels if we need any
+	// Maximum 10 people in the channel
+	clientChan := make(chan string, seatingCapacity)
+	doneChan := make(chan bool)
 
 	// create the Barbershop struct
+	shop := Barbershop{
+		ShopCapacity:    seatingCapacity,
+		HairCutDuration: cutDuration,
+		NumberOfBarbers: 0,
+		ClientsChan:     clientChan,
+		BarbersDoneChan: doneChan,
+		Open:            false,
+	}
+
+	color.Cyan("The shop is open for the day!")
 
 	// add barbers
+	shop.AddBarber("Frank")
 
 	// start the barbershop as a go routiner
-
+	shopClosing := make(chan bool)
+	closed := make(chan bool)
+	go func() {
+		// this time.After(timeOpen) is blocking the closing code for "timeOpen" seconds.
+		<-time.After(timeOpen)
+		shopClosing <- true
+		shop.CloseShopForDay()
+		closed <- true
+	}()
 	// add clients
 
 	// block until the barbershop is closed (forloop)
+	time.Sleep(15 * time.Second)
 }
