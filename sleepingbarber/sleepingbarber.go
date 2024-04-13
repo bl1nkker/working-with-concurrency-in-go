@@ -24,6 +24,8 @@
 package sleepingbarber
 
 import (
+	"fmt"
+	"math/rand"
 	"time"
 
 	"github.com/fatih/color"
@@ -51,13 +53,19 @@ func Run() {
 		NumberOfBarbers: 0,
 		ClientsChan:     clientChan,
 		BarbersDoneChan: doneChan,
-		Open:            false,
+		Open:            true,
+		TotalClients:    0,
+		MissedClients:   0,
+		ServedClients:   0,
 	}
 
 	color.Cyan("The shop is open for the day!")
 
 	// add barbers
 	shop.AddBarber("Frank")
+	// shop.AddBarber("Sam")
+	// shop.AddBarber("Josh")
+	// shop.AddBarber("Tyler")
 
 	// start the barbershop as a go routiner
 	shopClosing := make(chan bool)
@@ -70,7 +78,24 @@ func Run() {
 		closed <- true
 	}()
 	// add clients
+	i := 1
+	go func() {
+		for {
+			// get a random number with averate arrival rate
+			randomMilliseconds := rand.Int() % (2 * arrivalRate)
+			select {
+			// case 1: we receive something from shopClosing
+			case <-shopClosing:
+				// when this happens, it means that shop is closed, to it is done
+				return
+			// this is a point when a client arrives
+			case <-time.After(time.Millisecond * time.Duration(randomMilliseconds)):
+				shop.AddClient(fmt.Sprintf("Client #%d", i))
+				i++
+			}
+		}
+	}()
 
-	// block until the barbershop is closed (forloop)
-	time.Sleep(15 * time.Second)
+	// block until the barbershop is closed
+	<-closed
 }

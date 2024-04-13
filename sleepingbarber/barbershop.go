@@ -13,6 +13,9 @@ type Barbershop struct {
 	BarbersDoneChan chan bool
 	ClientsChan     chan string
 	Open            bool
+	TotalClients    int
+	MissedClients   int
+	ServedClients   int
 }
 
 func (b *Barbershop) AddBarber(barber string) {
@@ -52,6 +55,7 @@ func (b *Barbershop) CutHair(barber string, client string) {
 	color.Magenta("%s is cutting %s's hair", barber, client)
 	time.Sleep(b.HairCutDuration)
 	color.Magenta("%s is finished cutting %s's hair", barber, client)
+	b.ServedClients++
 }
 
 func (b *Barbershop) SendBarberHome(barber string) {
@@ -62,6 +66,8 @@ func (b *Barbershop) SendBarberHome(barber string) {
 func (b *Barbershop) CloseShopForDay() {
 	color.Green("Closing shop for the day...")
 	close(b.ClientsChan)
+	// Set our shop.Open variable to false. It's safe to set this to false now,
+	// since the client channel is closed, and no other GoRoutine can access it.
 	b.Open = false
 
 	// wait until all the barbers are done
@@ -72,5 +78,23 @@ func (b *Barbershop) CloseShopForDay() {
 
 	close(b.BarbersDoneChan)
 	color.Green("The barbershop is now closed for the day and everyone hase gone home.")
+	color.Green("Statistic for the day: Total - %d. Missed - %d. Served - %d.", b.TotalClients, b.MissedClients, b.ServedClients)
 	color.Green("--------------------------")
+}
+
+func (b *Barbershop) AddClient(client string) {
+	color.Blue("*** %s arrives!", client)
+	if b.Open {
+		b.TotalClients++
+		select {
+		case b.ClientsChan <- client:
+			color.Yellow("%s takes a seat in the waiting room", client)
+		// if waiting room is full
+		default:
+			b.MissedClients++
+			color.Red("The waiting room is full, so %s leaves", client)
+		}
+	} else {
+		color.Red("Duck you %s, the shop is already closed!", client)
+	}
 }
